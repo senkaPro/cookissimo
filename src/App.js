@@ -1,58 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux'
+import { Switch, Route, Link } from 'react-router-dom';
+import { Header } from './components/header'
+import AddRecipe from './components/recipes/components/recipeEntry'
+import { Button } from './components/recipes/components/layout';
+import { fetchRecipes } from './store/recipes/actions';
+import { Container } from './components/layout'
+import RecipeList from './components/recipes/recipeList';
+import RecipeDetail from './components/recipes/components/recipeDetail';
 
 function App() {
+  const recipes = useSelector(state => state.recipes.recipes, shallowEqual);
+  const dispatch = useDispatch()
+
+  React.useEffect(() => {
+    dispatch(fetchRecipes())
+  },[dispatch])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <Header brand={'Cookissimo'} />
+      <Container>
+        <Switch>
+          <Route exact path='/'><RecipeList recipes={recipes} /></Route>
+          <Route path='/add'><AddRecipe /></Route>
+          <Route path='/recipe/:id'><RecipeDetail /></Route>
+        </Switch>
+      </Container>
     </div>
   );
 }
+
 
 export default App;
